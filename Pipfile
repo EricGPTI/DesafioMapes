@@ -9,6 +9,7 @@ pytest-django = "*"
 flake8 = "*"
 codecov = "*"
 coverage = "*"
+pytest-cov = "*"
 
 [packages]
 django = "*"
