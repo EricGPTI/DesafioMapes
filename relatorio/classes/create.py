@@ -1,5 +1,6 @@
 from relatorio.models import Exame, Consulta, Medico
-
+#from django.db import IntegrityError
+from sqlite3 import IntegrityError
 
 class CreateDataExams:
     """
@@ -8,12 +9,13 @@ class CreateDataExams:
     def __init__(self, data_exams):
         self.data_exams = data_exams
 
-    def create(self):
+    def create_exams(self):
         exams = []
-        for item in self.data_exams:
-            obj_exams = Exame(numero_guia_consulta=item[0], exame=item[1], valor_exame=item[2])
+        for item in self.data_exams[1:]:
+            new_item = item.split(';')
+            obj_exams = Exame(numero_guia_consulta=new_item[0], exame=new_item[1], valor_exame=new_item[2])
             exams.append(obj_exams)
-        Exame.object.bulk_create(exams)
+        Exame.objects.bulk_create(exams)
 
 
 class CreateDataAppointment:
@@ -23,25 +25,34 @@ class CreateDataAppointment:
     def __init__(self, data_appointment):
         self.data_appointment = data_appointment
 
-    def create(self):
+    def create_appointment(self):
         appointment = []
         medico = []
-        for item in self.data_appointment:
-            obj_appointment = Consulta(numero_guia=item[0], data_consulta=[3], valor_consulta=item[4],
-                                       codigo_medico=item[1])
-            appointment.append(obj_appointment)
-
-            obj_medico = Medico(codigo_medico=item[1], nome=item[2])
-            medico.append(obj_medico)
-
-        Consulta.object.bulk_create(appointment)
-
-        for m in medico:
-            obj = Medico.object.filter(codigo_medico=m[1])
-            if obj in m:
-                medico.remove(m)
-        Medico.object.bulk_create(medico)
+        del self.data_appointment[-1]
+        for item in self.data_appointment[1:]:
+            try:
+                new_item = item.split(';')
+                obj_medico = Medico(codigo_medico=new_item[1], nome=new_item[2])
+                medico.append(obj_medico)
+            except ValueError as e:
+                continue
 
 
+        Medico.objects.bulk_create(medico, ignore_conflicts=True)
 
+        for item in self.data_appointment[1:]:
+            new_item = item.split(';')
+            guia = Consulta.objects.get(numero_guia=int(new_item[0]))
+            print(type(guia))
+            if guia != int(new_item[0]):
+                print(guia)
+                print(new_item[0])
+            try:
+                obj_appointment = Consulta(numero_guia=int(new_item[0]), data_consulta=new_item[3],
+                                           valor_consulta=new_item[4],
+                                           codigo_medico=Medico.objects.get(codigo_medico=int(new_item[1])))
+                appointment.append(obj_appointment)
+            except IntegrityError as e:
+                pass
 
+        Consulta.objects.bulk_create(appointment)
