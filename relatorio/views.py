@@ -12,8 +12,11 @@ def send(request):
     return render(request, 'send.html')
 
 
+def filtro_reports(request):
+    return render(request, 'report.html')
+
 def report(request):
-    return render(request, 'report_old.html')
+    pass
 
 
 def file(request):
