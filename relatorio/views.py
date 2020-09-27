@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render
-from relatorio.classes.reader import Reader
-from relatorio.classes.save_data import SaveData
-from relatorio.classes.valida_hash_file import ValidaHash
+from relatorio.classes.create import CreateDataExams, CreateDataAppointment
+from relatorio.classes.prepare_data import SaveData
 
 
 def home(request):
@@ -26,7 +25,18 @@ def file(request):
         if file.name.lower() in ['exames.csv', 'consultas.csv']:
             data = SaveData(file)
             processed_data = data.reader.type_file()
-            data.create(processed_data)
+            if processed_data[0] is 'exams':
+                CreateDataExams(processed_data[1])
+                CreateDataExams.create_exams()
+            else:
+                creator = CreateDataAppointment(processed_data[1])
+                creator.create_appointment()
+
+            #data_create = create_data(processed_data[0])
+            #data_create.processed_data[0]()
+
+            #create_data = CreateDataExams(processed_data)
+            #create_data.create_exams()
             # Precisa validar a partir daqui.
 
             return render(request, 'send.html')
