@@ -43,16 +43,9 @@ class CreateDataAppointment:
         for item in self.data_appointment[1:]:
             new_item = item.split(';')
             guia = Consulta.objects.get(numero_guia=int(new_item[0]))
-            print(type(guia))
-            if guia != int(new_item[0]):
-                print(guia)
-                print(new_item[0])
-            try:
-                obj_appointment = Consulta(numero_guia=int(new_item[0]), data_consulta=new_item[3],
-                                           valor_consulta=new_item[4],
-                                           codigo_medico=Medico.objects.get(codigo_medico=int(new_item[1])))
-                appointment.append(obj_appointment)
-            except IntegrityError as e:
-                pass
+            obj_appointment = Consulta(numero_guia=int(new_item[0]), data_consulta=new_item[3],
+                                       valor_consulta=new_item[4],
+                                       codigo_medico=Medico.objects.get(codigo_medico=int(new_item[1])))
+            appointment.append(obj_appointment)
 
         Consulta.objects.bulk_create(appointment)

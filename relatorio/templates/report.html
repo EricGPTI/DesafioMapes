@@ -1,33 +1,29 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
 {% block 'content' %}
+<div class="jumbotron jumbotron-fluid bg-dark text-white text-justify">
+    <h1 align="center">Enviar Arquivo</h1>
+    <p align="center">Faça o anexo de um arquivo .csv com o nome do arquivo iniciado com CONSULTAS ou EXAMES</p>
     <hr class="my-4">
-    <div class="row justify-content-center">
-        <h3><p class="bg-danger">{% include 'messages/_messages.html' %}</p></h3>
-    </div>
-    <div class="row align-items-start" style="margin-top: 20px">
-        <form action="{% url 'report' %}" method="post", id="wordcloud", enctype="multipart/form-data">
-            {% csrf_token %}
-            <p class="font-weight-bold text-primary">Escolha um chat</p>
-            <div class="form-group">
-                <select class="form-control form-control-lg" name="chat">
-                    <option value="None">None</option>
-                    {% for chat in chats %}
-                        {%  if chat is not None %}
-                            <option value="{{chat}}">{{chat}}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6" id="arquivo">
+                <form action="{% url 'file' %}" method="post" id="file" class="was-validated" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="validatedCustomFile" name="file" required>
+                        <label class="custom-file-label" for="validatedCustomFile">Selecione um arquivo</label>
+                        <div class="invalid-feedback">Obrigatório!</div>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Send</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
-        <hr class="my-4">
-        <div class="row align-items-start" style="margin-top: 20px">
-            <picture>
-                <img src="{% static 'img/wordcloud.jpg' %}"  alt="WordCloud" class="img-fluid ">
-            </picture>
+        </div>
+        <div class="row justify-content-center">
+            <div class="mb-3">
+                {% include 'messages/_messages.html' %}
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}

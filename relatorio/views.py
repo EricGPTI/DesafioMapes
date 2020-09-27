@@ -13,7 +13,7 @@ def send(request):
 
 
 def report(request):
-    return render(request, 'report.html')
+    return render(request, 'report_old.html')
 
 
 def file(request):
@@ -31,14 +31,7 @@ def file(request):
             else:
                 creator = CreateDataAppointment(processed_data[1])
                 creator.create_appointment()
-
-            #data_create = create_data(processed_data[0])
-            #data_create.processed_data[0]()
-
-            #create_data = CreateDataExams(processed_data)
-            #create_data.create_exams()
-            # Precisa validar a partir daqui.
-
+            messages.info(request, 'Arquivo processado!')
             return render(request, 'send.html')
         else:
             messages.warning(request, 'Arquivo diferente do requisitado.')
