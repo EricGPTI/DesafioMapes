@@ -1,33 +1,52 @@
 {% extends 'base.html' %}
 
-{% load static %}
-
 {% block 'content' %}
+<div class="jumbotron jumbotron-fluid bg-dark text-white text-justify">
+    <h1 align="center">Relatório</h1>
     <hr class="my-4">
-    <div class="row justify-content-center">
-        <h3><p class="bg-danger">{% include 'messages/_messages.html' %}</p></h3>
-    </div>
-    <div class="row align-items-start" style="margin-top: 20px">
-        <form action="{% url 'report' %}" method="post", id="wordcloud", enctype="multipart/form-data">
-            {% csrf_token %}
-            <p class="font-weight-bold text-primary">Escolha um chat</p>
-            <div class="form-group">
-                <select class="form-control form-control-lg" name="chat">
-                    <option value="None">None</option>
-                    {% for chat in chats %}
-                        {%  if chat is not None %}
-                            <option value="{{chat}}">{{chat}}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6" id="arquivo">
+                <form action="{% url 'file' %}" method="post" id="file" class="was-validated" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form group col-md-4 mb-6">
+                            <label for="Medico">Nome do Médico</label>
+                            <select class="form-control form-control-lg" name="medico">
+                                <option value="None">None</option>
+                                {% for medico in medicos %}
+                                    {%  if medico is not None %}
+                                    <option value="{{medico}}">{{medico}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Data Início</label>
+                            <input type="date" class="form-control form-control-lg" id="data_inicio">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Data Fim</label>
+                            <input type="date" class="form-control form-control-lg" id="data_fim">
+                        </div>
+
+                        <!--<div class="form group col-md-4 mb-2">
+                            <label>Data Inicio</label>
+                            <input type="date" class="form-control form-control-lg" name="data_inicio">
+                        </div>
+                        <div class="form gropu col-md-4 mb-2">
+                            <label>Data Final</label>
+                            <input type="date" class="form-control form-control-lg" name="data_fim">
+                        </div>-->
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
-        <hr class="my-4">
-        <div class="row align-items-start" style="margin-top: 20px">
-            <picture>
-                <img src="{% static 'img/wordcloud.jpg' %}"  alt="WordCloud" class="img-fluid ">
-            </picture>
+        </div>
+        <div class="row justify-content-center">
+            <div class="mb-3">
+                {% include 'messages/_messages.html' %}
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}
