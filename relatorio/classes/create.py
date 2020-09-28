@@ -1,7 +1,6 @@
 from relatorio.models import Exame, Consulta, Medico
-from django.db import IntegrityError as IE
-from sqlite3 import IntegrityError
-from psycopg2.errorcodes import UNIQUE_VIOLATION
+from django.db import IntegrityError
+
 
 class CreateDataExams:
     """
