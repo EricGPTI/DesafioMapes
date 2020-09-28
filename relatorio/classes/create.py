@@ -1,6 +1,6 @@
 from relatorio.models import Exame, Consulta, Medico
-#from django.db import IntegrityError
-from sqlite3 import IntegrityError
+from django.db import IntegrityError
+
 
 class CreateDataExams:
     """
@@ -11,6 +11,7 @@ class CreateDataExams:
 
     def create_exams(self):
         exams = []
+        del self.data_exams[-1]
         for item in self.data_exams[1:]:
             new_item = item.split(';')
             obj_exams = Exame(numero_guia_consulta=new_item[0], exame=new_item[1], valor_exame=new_item[2])
