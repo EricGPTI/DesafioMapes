@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from relatorio.classes.create import CreateDataExams, CreateDataAppointment
 from relatorio.classes.prepare_data import SaveData
+from relatorio.classes import relatorio
 
 
 def home(request):
@@ -13,10 +14,16 @@ def send(request):
 
 
 def filtro_reports(request):
-    return render(request, 'report.html')
+    medicos = relatorio.get_medicos()
+    return render(request, 'report.html', {'medicos': medicos})
 
 def report(request):
-    pass
+    if request.method == 'POST' and request.POST:
+        medico = request.POST['medico']
+        data_inicio = request.POST['data_inicio']
+        data_fim = request.POST['data_fim']
+
+
 
 
 def file(request):
