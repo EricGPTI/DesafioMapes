@@ -1,6 +1,7 @@
 from relatorio.models import Exame, Consulta, Medico
-#from django.db import IntegrityError
+from django.db import IntegrityError as IE
 from sqlite3 import IntegrityError
+from psycopg2.errorcodes import UNIQUE_VIOLATION
 
 class CreateDataExams:
     """
@@ -11,11 +12,14 @@ class CreateDataExams:
 
     def create_exams(self):
         exams = []
+        del self.data_exams[-1]
         for item in self.data_exams[1:]:
             new_item = item.split(';')
-            obj_exams = Exame(numero_guia_consulta=new_item[0], exame=new_item[1], valor_exame=new_item[2])
+            obj_exams = Exame(numero_guia_consulta=Consulta.objects.get(numero_guia=new_item[0]), exame=new_item[1],
+                              valor_exame=new_item[2])
+            print(obj_exams)
             exams.append(obj_exams)
-        Exame.objects.bulk_create(exams)
+        Exame.objects.bulk_create(exams, batch_size=1000)
 
 
 class CreateDataAppointment:
@@ -30,22 +34,23 @@ class CreateDataAppointment:
         medico = []
         del self.data_appointment[-1]
         for item in self.data_appointment[1:]:
-            try:
-                new_item = item.split(';')
-                obj_medico = Medico(codigo_medico=new_item[1], nome=new_item[2])
-                medico.append(obj_medico)
-            except ValueError as e:
-                continue
+            new_item = item.split(';')
+            obj_medico = Medico(codigo_medico=new_item[1], nome=new_item[2])
+            medico.append(obj_medico)
 
-
-        Medico.objects.bulk_create(medico, ignore_conflicts=True)
+        try:
+            Medico.objects.bulk_create(medico, batch_size=1000, ignore_conflicts=True)
+        except IntegrityError:
+            Medico.objects.bulk_update(medico, ['nome'], batch_size=1000)
 
         for item in self.data_appointment[1:]:
             new_item = item.split(';')
-            guia = Consulta.objects.get(numero_guia=int(new_item[0]))
             obj_appointment = Consulta(numero_guia=int(new_item[0]), data_consulta=new_item[3],
                                        valor_consulta=new_item[4],
                                        codigo_medico=Medico.objects.get(codigo_medico=int(new_item[1])))
             appointment.append(obj_appointment)
 
-        Consulta.objects.bulk_create(appointment)
+        try:
+            Consulta.objects.bulk_create(appointment)
+        except IntegrityError:
+            Consulta.objects.bulk_update(appointment, ['valor_consulta'], batch_size=1000)
