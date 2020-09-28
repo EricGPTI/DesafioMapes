@@ -2,20 +2,37 @@
 
 {% block 'content' %}
 <div class="jumbotron jumbotron-fluid bg-dark text-white text-justify">
-    <h1 align="center">Enviar Arquivo</h1>
-    <p align="center">Faça o anexo de um arquivo .csv com o nome do arquivo iniciado com CONSULTAS ou EXAMES</p>
+    <h1 align="center">Relatório</h1>
     <hr class="my-4">
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-6" id="arquivo">
                 <form action="{% url 'file' %}" method="post" id="file" class="was-validated" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="validatedCustomFile" name="file" required>
-                        <label class="custom-file-label" for="validatedCustomFile">Selecione um arquivo</label>
-                        <div class="invalid-feedback">Obrigatório!</div>
+                    <div class="form-row">
+                        <div class="form group col-md-4 mb-6">
+                            <label>Nome do Médico</label>
+                            <select class="form-control form-control-lg" name="medico">
+                                <option value="None">None</option>
+                                {% for medico in medicos %}
+                                    {%  if medico is not None %}
+                                    <option value="{{medico}}">{{medico}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Data Início</label>
+                            <input type="date" class="form-control form-control-lg" id="data_inicio">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Data Fim</label>
+                            <input type="date" class="form-control form-control-lg" id="data_fim">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-danger">Send</button>
                 </form>
             </div>
         </div>

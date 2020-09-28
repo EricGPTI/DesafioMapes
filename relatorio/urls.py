@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('home', views.home, name='home'),
     path('send', views.send, name='send'),
+    path('filtro_reports', views.filtro_reports, name='filtro_reports'),
     path('report', views.report, name='report'),
     path('process_file', views.file, name='file'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
