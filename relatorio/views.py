@@ -29,8 +29,8 @@ def file(request):
             data = SaveData(file)
             processed_data = data.reader.type_file()
             if processed_data[0] is 'exams':
-                CreateDataExams(processed_data[1])
-                CreateDataExams.create_exams()
+                creator = CreateDataExams(processed_data[1])
+                creator.create_exams()
             else:
                 creator = CreateDataAppointment(processed_data[1])
                 creator.create_appointment()
